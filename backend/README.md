@@ -180,3 +180,96 @@ Send a JSON object with the following structure:
 - Passwords are hashed using bcrypt before storage.
 - The returned token is a JWT — include it in the Authorization header as Bearer <token> for protected routes.
 - Validation follows express-validator format, returned as an array in the "errors" key.
+
+## 👤 User Profile
+
+### 🔗 Endpoint
+
+`GET /users/profile`
+
+---
+
+### 📄 Description
+
+Retrieves the profile of the currently authenticated user.
+
+---
+
+### 🧾 Request Body
+
+No request body required.
+
+### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "user": {
+      "_id": "<user_id>",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john.doe@example.com"
+    }
+  }
+  ```
+
+### ❌ Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "error": "Something went wrong while fetching the user profile."
+  }
+  ```
+
+### 📝 Notes for Frontend Developer
+
+- The user must be authenticated to access this endpoint.
+- The returned user object does not include the password.
+
+## 👤 User Logout
+
+### 🔗 Endpoint
+
+`GET /users/logout`
+
+---
+
+### 📄 Description
+
+Logs out the currently authenticated user and invalidates the JWT token.
+
+---
+
+### 🧾 Request Body
+
+No request body required.
+
+### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+### ❌ Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "error": "Something went wrong while logging out."
+  }
+  ```
+
+### 📝 Notes for Frontend Developer
+
+- The user must be authenticated to access this endpoint.
+- The token is blacklisted and will not be valid for future requests.
