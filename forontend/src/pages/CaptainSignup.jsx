@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaCar } from 'react-icons/fa';
+import { CaptainDataContext } from '../context/CaptainContext';
+import axios from 'axios';
 
 function CaptainSignup() {
     const [email, setEmail] = useState('');
@@ -14,15 +16,35 @@ function CaptainSignup() {
     const [userData, setUserData] = useState({});
     const [showPassword, setShowPassword] = useState(false);
 
-    const submitHandler = (e) => {
+    const { captain, setCaptain } = useContext(CaptainDataContext);
+    const navigate = useNavigate();
+
+    const submitHandler = async (e) => {
         e.preventDefault();
-        // Signup logic would go here
-        setUserData({
-            fullName: {
-                firstName,
-                lastName,
-            }, email, password,
-        });
+
+        const newCaptain = {
+            fullname: {
+                firstname: firstName,
+                lastname: lastName,
+            },
+            email,
+            password,
+            vehicle: {
+                color: vehicleColor,
+                plate: vehiclePlate,
+                capacity: vehicleCapacity,
+                vehicleType: vehicleType
+            }
+        };
+
+        const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/register`, newCaptain)
+
+        if (res.status === 201) {
+            const data = res.data
+            setCaptain(data.captain)
+            localStorage.setItem('token', data.token)
+            navigate('/captain-home')
+        }
 
         setEmail('');
         setPassword('');

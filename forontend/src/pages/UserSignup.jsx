@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
+import axios from 'axios'
+import UserContext, { UserDataContext } from '../context/UserContext';
 function UserSignup() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -10,17 +11,29 @@ function UserSignup() {
     const [userData, setUserData] = useState({});
     const [showPassword, setShowPassword] = useState(false);
 
-    const submitHandler = (e) => {
+    const navigate = useNavigate();
+    const { user, setUser } = useContext(UserDataContext)
+
+    const submitHandler = async (e) => {
         e.preventDefault();
-        // Signup logic would go here
-        setUserData({
-            fullName: {
-                firstName,
-                lastName,
+
+        const newUser = {
+            fullname: {
+                firstname: firstName,
+                lastname: lastName,
             },
             email,
             password
-        });
+        };
+
+        const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser);
+
+        if (res.status === 201) {
+            const data = res.data
+            setUser(data.user)
+            localStorage.setItem('token', data.token)
+            navigate('/home')
+        }
 
         setEmail('');
         setPassword('');
@@ -54,7 +67,6 @@ function UserSignup() {
                                 onChange={(e) => setFirstName(e.target.value)}
                             />
                             <input
-                                required
                                 className='bg-gray-100 w-1/2 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all'
                                 type="text"
                                 placeholder='Last name'

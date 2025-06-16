@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaArrowRight, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { UserDataContext } from '../context/UserContext';
+import axios from 'axios';
 
 function UserLogin() {
     const [email, setEmail] = useState('');
@@ -8,15 +10,27 @@ function UserLogin() {
     const [userData, setUserData] = useState({});
     const [showPassword, setShowPassword] = useState(false);
 
-    const submitHandler = (e) => {
+    const navigate = useNavigate();
+    const { user, setUser } = useContext(UserDataContext)
+
+
+    const submitHandler = async (e) => {
         e.preventDefault();
         // Login logic would go here
-        setUserData({
+        const userData = {
             email: email,
             password: password
-        })
+        }
 
-        
+        const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData);
+
+        if (res.status === 200) {
+            const data = res.data
+            setUser(data.user)
+            localStorage.setItem('token', data.token)
+            navigate('/home')
+        }
+
         setEmail('');
         setPassword('');
     };
