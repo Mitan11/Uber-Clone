@@ -387,3 +387,188 @@ Send a JSON object with the following structure:
 - Passwords are hashed using bcrypt before storage.
 - The returned token is a JWT — include it in the Authorization header as Bearer <token> for protected routes.
 - Validation follows express-validator format, returned as an array in the "errors" key.
+
+## 👤 Captain Login
+
+### 🔗 Endpoint
+
+`POST /captains/login`
+
+---
+
+### 📄 Description
+
+Authenticates a captain and returns a JWT token for subsequent requests.
+
+---
+
+### 🧾 Request Body
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "email": "string (valid email, required)",
+  "password": "string (min 6 characters, required)"
+}
+```
+
+#### ✅ Example
+
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "securePassword123"
+}
+```
+
+### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "token": "<jwt_token>",
+    "captain": {
+      "_id": "<captain_id>",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john.doe@example.com",
+      "password": "securePassword123"
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+    }
+  }
+  ```
+
+### ⚠️ Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "error": [
+      {
+        "msg": "Invalid email or password",
+        "param": "email",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+### ❌ Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "error": "Something went wrong while logging in."
+  }
+  ```
+
+## 👤 Captain Profile
+
+### 🔗 Endpoint
+
+`GET /captains/profile`
+
+---
+
+### 📄 Description
+
+Retrieves the profile of the currently authenticated captain.
+
+---
+
+### 🧾 Request Body
+
+No request body required.
+
+### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "captain": {
+      "_id": "<captain_id>",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john.doe@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+    }
+  }
+  ```
+
+### ❌ Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "error": "Something went wrong while fetching the captain profile."
+  }
+  ```
+
+### 📝 Notes for Frontend Developer
+
+- The captain must be authenticated to access this endpoint.
+- The returned captain object does not include the password.
+
+## 👤 Captain Logout
+
+### 🔗 Endpoint
+
+`GET /captains/logout`
+
+---
+
+### 📄 Description
+
+Logs out the currently authenticated captain and invalidates the JWT token.
+
+---
+
+### 🧾 Request Body
+
+No request body required.
+
+### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+### ❌ Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "error": "Something went wrong while logging out."
+  }
+  ```
+
+### 📝 Notes for Frontend Developer
+
+- The captain must be authenticated to access this endpoint.
+- The token is blacklisted and will not be valid for future requests.
+- The token can be provided either in cookies or in the Authorization header.
