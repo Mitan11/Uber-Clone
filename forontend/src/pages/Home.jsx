@@ -4,7 +4,6 @@ import gsap from 'gsap';
 import LocationSearchPanel from '../components/LocationSearchPanel';
 import VehiclePanel from '../components/VehiclePanel';
 import ConfirmRide from '../components/ConfirmRide';
-import 'remixicon/fonts/remixicon.css'
 import { FaAngleDown } from "react-icons/fa6";
 import LookingForDriver from '../components/LookingForDriver';
 import WaitingForDriver from '../components/WaitingForDriver';
