@@ -572,3 +572,198 @@ No request body required.
 - The captain must be authenticated to access this endpoint.
 - The token is blacklisted and will not be valid for future requests.
 - The token can be provided either in cookies or in the Authorization header.
+
+## 🗺️ Maps API
+
+### Get Coordinates
+
+#### 🔗 Endpoint
+
+`GET /maps/get-coordinates`
+
+#### 📄 Description
+
+Retrieves the geographical coordinates (latitude and longitude) for a given address using Google Maps Geocoding API.
+
+#### 🧾 Query Parameters
+
+| Parameter | Type   | Description                                    | Required |
+|-----------|--------|------------------------------------------------|----------|
+| address   | string | The address to get coordinates for (min 3 chars)| Yes      |
+
+#### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "ltd": 12.9716,
+    "lng": 77.5946
+  }
+  ```
+
+#### ⚠️ Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Address must be at least 3 characters long",
+        "param": "address",
+        "location": "query"
+      }
+    ]
+  }
+  ```
+
+#### ❌ Not Found Error
+
+- **Status Code:** `404 Not Found`
+- **Body:**
+  ```json
+  {
+    "message": "Coordinates not found"
+  }
+  ```
+
+#### 📝 Notes for Frontend Developer
+
+- This endpoint requires user authentication.
+- The address should be properly formatted for better results.
+- The response provides latitude (ltd) and longitude (lng) coordinates.
+- The endpoint uses Google Maps Geocoding API internally.
+- Make sure to handle cases where coordinates cannot be found for the given address.
+
+### Get Distance and Time
+
+#### 🔗 Endpoint
+
+`GET /maps/get-distance-time`
+
+#### 📄 Description
+
+Calculates the distance and travel time between two locations using Google Maps Distance Matrix API.
+
+#### 🧾 Query Parameters
+
+| Parameter    | Type   | Description                                    | Required |
+|--------------|--------|------------------------------------------------|----------|
+| origin       | string | Starting location (min 3 chars)                | Yes      |
+| destination  | string | Ending location (min 3 chars)                  | Yes      |
+
+#### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "distance": {
+      "text": "5.2 km",
+      "value": 5200
+    },
+    "duration": {
+      "text": "15 mins",
+      "value": 900
+    },
+    "status": "OK"
+  }
+  ```
+
+#### ⚠️ Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Origin must be at least 3 characters long",
+        "param": "origin",
+        "location": "query"
+      }
+    ]
+  }
+  ```
+
+#### ❌ Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "message": "Internal server error"
+  }
+  ```
+
+#### 📝 Notes for Frontend Developer
+
+- This endpoint requires user authentication.
+- Both origin and destination should be properly formatted addresses.
+- Distance is returned in both text format (e.g., "5.2 km") and value format (in meters).
+- Duration is returned in both text format (e.g., "15 mins") and value format (in seconds).
+- The endpoint uses Google Maps Distance Matrix API internally.
+
+### Get Address Suggestions
+
+#### 🔗 Endpoint
+
+`GET /maps/get-suggestions`
+
+#### 📄 Description
+
+Retrieves address suggestions based on user input using Google Maps Places Autocomplete API.
+
+#### 🧾 Query Parameters
+
+| Parameter | Type   | Description                                    | Required |
+|-----------|--------|------------------------------------------------|----------|
+| input     | string | The search query (min 3 chars)                 | Yes      |
+
+#### ✅ Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  [
+    "123 Main Street, New York, NY, USA",
+    "123 Main Avenue, New York, NY, USA",
+    "123 Main Road, New York, NY, USA"
+  ]
+  ```
+
+#### ⚠️ Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Input must be at least 3 characters long",
+        "param": "input",
+        "location": "query"
+      }
+    ]
+  }
+  ```
+
+#### ❌ Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "message": "Internal server error"
+  }
+  ```
+
+#### 📝 Notes for Frontend Developer
+
+- This endpoint requires user authentication.
+- The input should be at least 3 characters long.
+- The response is an array of address suggestions.
+- The endpoint uses Google Maps Places Autocomplete API internally.
+- Suggestions are returned as full address strings.
+- Results are filtered to remove any empty values.
