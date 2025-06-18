@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports.getAddressCoordinate = async (address) => {
-    const apiKey = process.env.GOOGLE_MAPS_API || 'AIzaSyArJm5q25L41f226KfpE6KMF8WkKe4mwt8';
+    const apiKey = process.env.GOOGLE_MAPS_API;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
 
     try {
